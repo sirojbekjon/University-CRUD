@@ -11,6 +11,9 @@ import com.example.appjparelationships.repository.GrouphRepository;
 import com.example.appjparelationships.repository.StudentRepository;
 import com.example.appjparelationships.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,9 +37,20 @@ public class StudentController {
     GrouphRepository grouphRepository;
 
 
-    @GetMapping
-    public List<Student>getStudent(){
-        return studentRepository.findAll();
+    @GetMapping("/forMinistry")
+    public Page<Student> getStudentListForMinistry(@RequestParam int page){
+        //select * from student limit 10 offset 0 where
+        Pageable pageable = PageRequest.of(page,10);
+        Page<Student> studentPage = studentRepository.findAll(pageable);
+        return studentPage;
+    }
+    @GetMapping("/forUniversity/{id}")
+    public Page<Student> getStudentListForUniversity(@PathVariable Integer universityId,
+                                                     @RequestParam int page){
+        //select * from student limit 10 offset 0 where
+        Pageable pageable = PageRequest.of(page,10);
+        Page<Student> studentPage = studentRepository.findAllByGrouph_Faculty_UniversityId(universityId, pageable);
+        return studentPage;
     }
 
 
