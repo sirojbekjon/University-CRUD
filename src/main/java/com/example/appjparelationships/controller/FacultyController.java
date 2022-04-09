@@ -1,18 +1,22 @@
 package com.example.appjparelationships.controller;
 
 import com.example.appjparelationships.entity.Faculty;
+import com.example.appjparelationships.entity.Grouph;
 import com.example.appjparelationships.entity.University;
 import com.example.appjparelationships.payload.FacultyDto;
 import com.example.appjparelationships.repository.FacultyRepository;
 import com.example.appjparelationships.repository.UniversityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-//@RequestMapping(value = "/faculty")
+@RequestMapping(value = "/faculty")
 public class FacultyController {
     @Autowired
     FacultyRepository facultyRepository;
@@ -20,17 +24,23 @@ public class FacultyController {
     @Autowired
     UniversityRepository universityRepository;
 
-    @RequestMapping(value = "/faculty",method = RequestMethod.GET)
-            public List<Faculty> getFaculty(){
-            List<Faculty> facultyList = facultyRepository.findAll();
-            return facultyList;
-        }
-
-
     @GetMapping
     public List<Faculty>getFaculties(){
-
         return facultyRepository.findAll();
+    }
+
+    @GetMapping("/forMinistry")
+    public Page<Faculty> getGrouphListForMinistry(@RequestParam int page){
+        Pageable pageable = PageRequest.of(page,10);
+        Page<Faculty> facultyPage = facultyRepository.findAll(pageable);
+        return facultyPage;
+    }
+
+    @GetMapping("/forUniversity/{universityId}")
+    public Page<Faculty> getGrouphListForUniversity(@PathVariable Integer universityId,@RequestParam int page){
+        Pageable pageable = PageRequest.of(page,10);
+        Page<Faculty> facultyPage = facultyRepository.findAllByUniversityId(universityId,pageable);
+        return facultyPage;
     }
 
     @RequestMapping(value = "/faculty",method = RequestMethod.POST)
@@ -50,12 +60,9 @@ public class FacultyController {
          return "Faculty added";
     }
 
-
-
     @GetMapping("/byUniversityId/{university_id}")
     public List<Faculty> getFacultiesByuniversityId(@PathVariable Integer university_id){
         List<Faculty> allByUniversity_id = facultyRepository.findAllByUniversity_id(university_id);
-
         return allByUniversity_id;
     }
 

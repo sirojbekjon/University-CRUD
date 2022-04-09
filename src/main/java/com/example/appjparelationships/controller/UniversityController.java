@@ -1,11 +1,15 @@
 package com.example.appjparelationships.controller;
 
 import com.example.appjparelationships.entity.Address;
+import com.example.appjparelationships.entity.Faculty;
 import com.example.appjparelationships.entity.University;
 import com.example.appjparelationships.payload.UniversityDto;
 import com.example.appjparelationships.repository.AddressRepository;
 import com.example.appjparelationships.repository.UniversityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +27,14 @@ public class UniversityController {
         List<University> universityList = universityRepository.findAll();
         return universityList;
         }
+
+    @GetMapping("/forMinistry")
+    public Page<University> getGrouphListForMinistry(@RequestParam int page){
+        //select * from student limit 10 offset 0 where...
+        Pageable pageable = PageRequest.of(page,10);
+        Page<University> universityPage = universityRepository.findAll(pageable);
+        return universityPage;
+    }
 
     @RequestMapping(value = "/university",method = RequestMethod.POST)
     public String addUniversity(@RequestBody UniversityDto universityDto){
