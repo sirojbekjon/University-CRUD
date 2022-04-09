@@ -54,9 +54,8 @@ public class StudentController {
     }
 
 
-        @PostMapping
-        @RequestMapping(method = RequestMethod.POST)
-    public String addStudent(@RequestBody StudentDto studentDto){
+        @PostMapping("/addStudent")
+        public String addStudent(@RequestBody StudentDto studentDto){
         final List<Student> studentList = studentRepository.findAll();
         final boolean exists = studentRepository.existsByFirstNameAndLastNameAndGrouph_IdAndAddress_Id(
                 studentDto.getFirstName(),
